@@ -13,6 +13,8 @@
 #include "if2indco.h"
 #include "funcbloc.h"
 
+#include <iostream>
+
 CInterface2InternalDataConnection::CInterface2InternalDataConnection() :
     CDataConnection(0, cg_unInvalidPortId, 0){
 }
@@ -29,6 +31,7 @@ void CInterface2InternalDataConnection::cloneInputInterfaceValue(void){
 }
 
 void CInterface2InternalDataConnection::setSource(CFunctionBlock *paSrcFB, TPortId paSrcPortId){
+  std::cout << "CInterface2InternalDataConnection::setSource" << std::endl;
   CConnection::setSource(paSrcFB, paSrcPortId);
   m_poValue = paSrcFB->getDIFromPortId(paSrcPortId);
 }

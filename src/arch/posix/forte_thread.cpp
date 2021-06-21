@@ -20,8 +20,11 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <criticalregion.h>
+#include <iostream>
 
 forte::arch::CThreadBase<pthread_t>::TThreadHandleType CPosixThread::createThread(long paStackSize){
+  std::cout << "CPosixThread::createThread init..." << std::endl;
+
   TThreadHandleType retVal = 0;
 
   if(paStackSize){

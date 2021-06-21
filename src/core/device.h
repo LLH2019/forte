@@ -16,6 +16,8 @@
 #include "resource.h"
 #include "devexec.h"
 
+#include <iostream>
+
 /*!\ingroup CORE CDevice represents a device according to IEC 61499. CDevice contains
  - one or more IEC 61499 compliant resources (CResource),
  -  a device management (CDeviceAdministrator)
@@ -47,6 +49,7 @@ class CDevice : public CResource {
     CDevice(const SFBInterfaceSpec *pa_pstInterfaceSpec, const CStringDictionary::TStringId pa_nInstanceNameId, TForteByte *pa_acFBConnData,
         TForteByte *pa_acFBVarsData) :
         CResource(pa_pstInterfaceSpec, pa_nInstanceNameId, pa_acFBConnData, pa_acFBVarsData), mDeviceExecution() {
+      std::cout << "CDevice init..." << std::endl;
     }
 
     virtual ~CDevice() {
@@ -66,7 +69,9 @@ class CDevice : public CResource {
      *  \return 0 on success -1 on error
      */
     virtual int startDevice(void) {
+      std::cout <<  "device::startDevice init ..." << std::endl;
       changeFBExecutionState(cg_nMGM_CMD_Start);
+      std::cout <<  "device::startDevice finished ..." << std::endl;
       return 1;
     }
 

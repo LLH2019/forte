@@ -18,6 +18,8 @@
 
 #include "../utils/mainparam_utils.h"
 
+#include <iostream>
+
 #ifdef FORTE_ROS
 #include <ros/ros.h>
 #endif //FORTE_ROS
@@ -53,7 +55,7 @@ void endForte(int pa_nSig){
  * \param pa_acMGRID A string containing IP and Port like [IP]:[Port]
  */
 void createDev(const char *pa_acMGRID){
-
+  std::cout << "createDev init... " << std::endl;
   signal(SIGINT, endForte);
   signal(SIGTERM, endForte);
   signal(SIGHUP, endForte);
@@ -61,15 +63,20 @@ void createDev(const char *pa_acMGRID){
 #ifdef CONFIG_POWERLINK_USERSTACK
   CEplStackWrapper::eplMainInit();
 #endif
-
-  poDev = new RMT_DEV;
-
+  std::cout << "new RMT_DEV ()" << std::endl;
+  poDev = new RMT_DEV; 
+  std::cout << "setMGR_ID()" << std::endl;
   poDev->setMGR_ID(pa_acMGRID);
+  std::cout << "startDevice()" << std::endl;
   poDev->startDevice();
+
+
   DEVLOG_INFO("FORTE is up and running\n");
   poDev->MGR.joinResourceThread();
   DEVLOG_INFO("FORTE finished\n");
   delete poDev;
+
+  std::cout << "createDev finished... " << std::endl;
 }
 
 int main(int argc, char *arg[]){

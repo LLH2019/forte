@@ -14,6 +14,8 @@
 #include <string.h>
 #include "conn.h"
 
+#include <iostream>
+
 CConnection::CConnection(CFunctionBlock *paSrcFB, TPortId paSrcPortId) :
     mSourceId(paSrcFB, paSrcPortId){
 }
@@ -53,6 +55,7 @@ EMGMResponse CConnection::removeDestination(const CConnectionPoint &paDestPoint)
 }
 
 void CConnection::setSource(CFunctionBlock *paSrcFB, TPortId paSrcPortId){
+  std::cout << "CConnection::setSource " << (int)paSrcPortId << std::endl;
   mSourceId.mFB = paSrcFB;
   mSourceId.mPortId = paSrcPortId;
 }

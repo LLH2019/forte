@@ -26,6 +26,7 @@
 #include "../arch/devlog.h"
 #include "iec61131_functions.h"
 #include <stringlist.h>
+#include <iostream>
 
 class CEventChainExecutionThread;
 class CAdapter;
@@ -449,6 +450,7 @@ class CFunctionBlock{
      * on creation and on RESET).
      */
     virtual void setInitialValues(){
+      std::cout << "Cfb setInitialValues ..." << std::endl;
     }
 
     //!declared but undefined copy constructor as we don't want FBs to be directly copied.

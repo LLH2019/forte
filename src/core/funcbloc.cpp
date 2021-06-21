@@ -26,6 +26,9 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include <stdio.h>
+#include <iostream>
+
 CFunctionBlock::CFunctionBlock(CResource *pa_poSrcRes, const SFBInterfaceSpec *pa_pstInterfaceSpec, const CStringDictionary::TStringId pa_nInstanceNameId, TForteByte *pa_acFBConnData, TForteByte *pa_acFBVarsData) :
    mEOConns(0), m_apoDIConns(0), mDOConns(0),
    m_poInvokingExecEnv(0), m_apoAdapters(0), m_poResource(pa_poSrcRes), m_aoDIs(0), m_aoDOs(0), m_nFBInstanceName(pa_nInstanceNameId),
@@ -36,8 +39,9 @@ CFunctionBlock::CFunctionBlock(CResource *pa_poSrcRes, const SFBInterfaceSpec *p
   mEIMonitorCount = 0;
   mEOMonitorCount = 0;
 #endif
-
+  printf("CFunctionBlock init...\n");
   setupFBInterface(pa_pstInterfaceSpec, pa_acFBConnData, pa_acFBVarsData);
+  printf("CFunctionBlock init finished\n");
 }
 
 CFunctionBlock::~CFunctionBlock(){
@@ -298,6 +302,7 @@ void CFunctionBlock::receiveInputEvent(size_t paEIID, CEventChainExecutionThread
 #ifdef FORTE_SUPPORT_MONITORING
             if(true != di->isForced()) {
 #endif //FORTE_SUPPORT_MONITORING
+              printf("666666....\n");
               m_apoDIConns[eiWithStart[i]]->readData(di);
 #ifdef FORTE_SUPPORT_MONITORING
             }
@@ -316,6 +321,8 @@ void CFunctionBlock::receiveInputEvent(size_t paEIID, CEventChainExecutionThread
 }
 
 EMGMResponse CFunctionBlock::changeFBExecutionState(EMGMCommandType pa_unCommand){
+  std::cout << "CFunctionBlock::changeFBExecutionState..." << pa_unCommand << std::endl;
+
   EMGMResponse nRetVal = e_INVALID_STATE;
   switch (pa_unCommand){
     case cg_nMGM_CMD_Start:
@@ -376,8 +383,18 @@ CIEC_ANY *CFunctionBlock::createDataPoint(const CStringDictionary::TStringId **p
 void CFunctionBlock::setupFBInterface(const SFBInterfaceSpec *pa_pstInterfaceSpec, TForteByte *pa_acFBConnData, TForteByte *pa_acFBVarsData){
   m_pstInterfaceSpec = const_cast<SFBInterfaceSpec *>(pa_pstInterfaceSpec);
 
+
+
   if(0 != pa_pstInterfaceSpec){
+
+    // printf("CFunctionBlock setupFBInterface...\n");
+
     if((0 != pa_acFBConnData) && (0 != pa_acFBVarsData)){
+
+      std::cout << "*pa_acFBConnData: " << *pa_acFBConnData << pa_acFBConnData<< std::endl; 
+      std::cout << "*pa_acFBVarsData: " << *pa_acFBVarsData << pa_acFBVarsData<< std::endl; 
+      printf("CFunctionBlock setupFBInterface...\n");
+
       TPortId i;
       if(m_pstInterfaceSpec->m_nNumEOs){
         mEOConns = reinterpret_cast<CEventConnection *>(pa_acFBConnData);

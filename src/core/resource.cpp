@@ -22,6 +22,9 @@
 #include "utils/fixedcapvector.h"
 #include "ecet.h"
 
+#include <stdio.h>
+#include <iostream>
+
 #ifdef FORTE_DYNAMIC_TYPE_LOAD
 #include "lua/luaengine.h"
 #include "lua/luacfbtypeentry.h"
@@ -39,6 +42,7 @@ CResource::CResource(CResource* pa_poDevice, const SFBInterfaceSpec *pa_pstInter
 #ifdef FORTE_DYNAMIC_TYPE_LOAD
   luaEngine = new CLuaEngine();
 #endif
+  std::cout << "CResource ::() " << std::endl;
   initializeResIf2InConnections();
 }
 
@@ -52,7 +56,9 @@ CResource::CResource(const SFBInterfaceSpec *pa_pstInterfaceSpec, const CStringD
 #ifdef FORTE_DYNAMIC_TYPE_LOAD
   luaEngine = new CLuaEngine();
 #endif
+  printf("CResource init...\n");
   initializeResIf2InConnections();
+  std::cout << "CResource init finished..." << std::endl;
 }
 
 CResource::~CResource(){
@@ -65,6 +71,8 @@ CResource::~CResource(){
 
 EMGMResponse CResource::executeMGMCommand(forte::core::SManagementCMD &paCommand){
   EMGMResponse retVal = e_INVALID_DST;
+  
+  printf("CResource::executeMGMCommand...\n");
 
   if(CStringDictionary::scm_nInvalidStringId == paCommand.mDestination){
     switch (paCommand.mCMD){
@@ -143,23 +151,29 @@ EMGMResponse CResource::executeMGMCommand(forte::core::SManagementCMD &paCommand
 }
 
 EMGMResponse CResource::changeFBExecutionState(EMGMCommandType pa_unCommand){
+  std::cout << "CResource::changeFBExecutionState " + (int)pa_unCommand << std::endl;
+
   EMGMResponse retVal = CFunctionBlock::changeFBExecutionState(pa_unCommand);
+  std::cout << "CResource::changeFBExecutionState step 2 " + retVal << std::endl;
   if(e_RDY == retVal){
     retVal = changeContainedFBsExecutionState(pa_unCommand);
     if(e_RDY == retVal){
       if(cg_nMGM_CMD_Start == pa_unCommand && 0 != m_pstInterfaceSpec){ //on start, sample inputs
         for(int i = 0; i < m_pstInterfaceSpec->m_nNumDIs; ++i){
           if(0 != m_apoDIConns[i]){
+            printf("resource changeFBExecutionState...%d \n",  m_pstInterfaceSpec->m_nNumDIs);
             m_apoDIConns[i]->readData(getDI(i));
           }
         }
       }
       if(0 != mResourceEventExecution){
         // if we have a m_poResourceEventExecution handle it
+        printf("222222..\n");
         mResourceEventExecution->changeExecutionState(pa_unCommand);
       }
     }
   }
+  std::cout << " CResource::changeFBExecutionState finished" + retVal << std::endl;
   return retVal;
 }
 
@@ -634,8 +648,10 @@ CConnection *CResource::getResIf2InConnection(CStringDictionary::TStringId paRes
 
 void CResource::initializeResIf2InConnections(){
   if(0 != m_pstInterfaceSpec){
+    printf("CResource initializeResIf2InConnections...\n");
     mResIf2InConnections = new CInterface2InternalDataConnection[m_pstInterfaceSpec->m_nNumDIs];
     for(TPortId i = 0; i < m_pstInterfaceSpec->m_nNumDIs; i++){
+      std::cout << "CResource::initializeResIf2InConnections " << i << " " << (int)m_pstInterfaceSpec->m_nNumDIs << std::endl;
       (mResIf2InConnections + i)->setSource(this, i);
     }
   }

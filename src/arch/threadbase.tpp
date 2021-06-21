@@ -13,6 +13,8 @@
 #include "threadbase.h"
 #include <criticalregion.h>
 #include "../devlog.h"
+#include <stdio.h>
+#include <iostream>
 
 using namespace forte::arch;
 
@@ -32,6 +34,7 @@ CThreadBase<TThreadHandle, nullHandle, ThreadDeletePolicy>::~CThreadBase() {
 
 template <typename TThreadHandle, TThreadHandle nullHandle, typename ThreadDeletePolicy>
 void CThreadBase<TThreadHandle, nullHandle, ThreadDeletePolicy>::start(void){
+  std::cout << "threadbase start init " << std::endl;
   CCriticalRegion criticalRegion(mThreadMutex);
   if(nullHandle == mThreadHandle){
     mThreadHandle = createThread(mStackSize);
@@ -40,6 +43,7 @@ void CThreadBase<TThreadHandle, nullHandle, ThreadDeletePolicy>::start(void){
       mJoinSem.inc();
     }
   }
+  std::cout << "threadbase start finish " << std::endl;
 }
 
 template <typename TThreadHandle, TThreadHandle nullHandle, typename ThreadDeletePolicy>
@@ -55,7 +59,9 @@ void CThreadBase<TThreadHandle, nullHandle, ThreadDeletePolicy>::end(void) {
 
 template <typename TThreadHandle, TThreadHandle nullHandle, typename ThreadDeletePolicy>
 void CThreadBase<TThreadHandle, nullHandle, ThreadDeletePolicy>::join(){
+  printf("threadbase join...\n");
   if(nullHandle != mThreadHandle){
+    printf("iiiii..\n");
     mJoinSem.waitIndefinitely();
     mJoinSem.inc(); //allow many joins
   }
@@ -63,6 +69,8 @@ void CThreadBase<TThreadHandle, nullHandle, ThreadDeletePolicy>::join(){
 
 template <typename TThreadHandle, TThreadHandle nullHandle, typename ThreadDeletePolicy>
 void CThreadBase<TThreadHandle, nullHandle, ThreadDeletePolicy>::runThread(CThreadBase *paThread) {
+  std::cout << "threadbase runThread init " << std::endl;
+
   // if pointer is ok
   if (0 != paThread) {
     paThread->setAlive(true);
@@ -72,4 +80,5 @@ void CThreadBase<TThreadHandle, nullHandle, ThreadDeletePolicy>::runThread(CThre
   } else {
     DEVLOG_ERROR("pThread pointer is 0!");
   }
+  std::cout << "threadbase runThread finished " << std::endl;
 }

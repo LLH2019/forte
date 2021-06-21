@@ -16,6 +16,8 @@
 #include "fbcontainer.h"
 #include "funcbloc.h"
 
+#include <iostream>
+
 using namespace forte::core;
 
 EMGMResponse checkForActionEquivalentState(const CFunctionBlock &paFB, const EMGMCommandType paCommand){
@@ -190,6 +192,8 @@ CFBContainer *CFBContainer::findOrCreateContainer(CStringDictionary::TStringId p
 }
 
 EMGMResponse CFBContainer::changeContainedFBsExecutionState(EMGMCommandType paCommand){
+  std::cout << "CFBContainer::changeContainedFBsExecutionState init" << std::endl;
+
   EMGMResponse retVal = e_RDY;
 
   for(TFBContainerList::Iterator it(mSubContainers.begin());
@@ -208,5 +212,6 @@ EMGMResponse CFBContainer::changeContainedFBsExecutionState(EMGMCommandType paCo
       }
     }
   }
+  std::cout << "CFBContainer::changeContainedFBsExecutionState finished" << std::endl;
   return retVal;
 }

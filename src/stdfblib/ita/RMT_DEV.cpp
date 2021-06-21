@@ -16,6 +16,9 @@
 #endif
 #include <stringdict.h>
 
+#include <stdio.h>
+#include <iostream>
+
 const CStringDictionary::TStringId RMT_DEV::scm_aunDINameIds[] = { g_nStringIdMGR_ID };
 const CStringDictionary::TStringId RMT_DEV::scm_aunDIDataTypeIds[] = {g_nStringIdWSTRING};
 
@@ -27,6 +30,8 @@ const SFBInterfaceSpec RMT_DEV::scm_stFBInterfaceSpec = { 0, 0, 0, 0, 0, 0, 0,
 RMT_DEV::RMT_DEV() :
   CDevice(&scm_stFBInterfaceSpec, CStringDictionary::scm_nInvalidStringId, m_anFBConnData, m_anFBVarsData),
       MGR(g_nStringIdMGR, this){
+  
+  printf("RMT_DEV init...\n");
 
   MGR_ID().fromString("localhost:61499");
 
@@ -36,14 +41,17 @@ RMT_DEV::RMT_DEV() :
   
   //Perform reset command normally done by the typelib during the creation process
   changeFBExecutionState(cg_nMGM_CMD_Reset);
+  std::cout << "RMT_DEV finished..." << std::endl;
 }
 
 RMT_DEV::~RMT_DEV(){
 }
 
 int RMT_DEV::startDevice(void){
+  std::cout <<  "RMT_DEV::startDevice init ..." << std::endl;
   CDevice::startDevice();
   MGR.changeFBExecutionState(cg_nMGM_CMD_Start);
+  std::cout <<  "RMT_DEV::startDevice finished ..." << std::endl;
   return 0;
 }
 

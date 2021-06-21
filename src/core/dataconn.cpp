@@ -14,6 +14,8 @@
  *******************************************************************************/
 #include "dataconn.h"
 #include "funcbloc.h"
+#include <stdio.h>
+#include <iostream>
 
 CDataConnection::CDataConnection(CFunctionBlock *paSrcFB, TPortId paSrcPortId,
     const CIEC_ANY *paSrcDO) :
@@ -34,9 +36,13 @@ CDataConnection::~CDataConnection(){
 
 EMGMResponse CDataConnection::connect(CFunctionBlock *paDstFB,
     CStringDictionary::TStringId paDstPortNameId){
+
   EMGMResponse retVal = e_NO_SUCH_OBJECT;
 
   TPortId dstPortId = paDstFB->getDIID(paDstPortNameId);
+
+  std::cout << "CDataConnection::connect..." << (int)dstPortId << std::endl;
+
   if(cg_unInvalidPortId != dstPortId){
     CIEC_ANY *dstDataPoint = paDstFB->getDIFromPortId(dstPortId);
     retVal = establishDataConnection(paDstFB, dstPortId, dstDataPoint);
@@ -66,6 +72,7 @@ void CDataConnection::handleAnySrcPortConnection(const CIEC_ANY &paDstDataPoint)
       //We already have some connection also set their correct type
       for(TDestinationIdList::Iterator it = mDestinationIds.begin();
           it != mDestinationIds.end(); ++it){
+        // printf("111111111...\n");
         it->mFB->connectDI(it->mPortId, this);
       }
     }
@@ -88,7 +95,10 @@ CDataConnection::disconnect(CFunctionBlock *paDstFB, CStringDictionary::TStringI
 }
 
 void CDataConnection::readData(CIEC_ANY *pa_poValue) const{
+  std::cout << "CDataConnection::readData init"  << std::endl;
   if(m_poValue){
+    std::cout << "dataconn readData..."  << std::endl;
+    std::cout << pa_poValue << std::endl;
     if(!mSpecialCastConnection){
       pa_poValue->setValue(*m_poValue);
     }
@@ -96,6 +106,7 @@ void CDataConnection::readData(CIEC_ANY *pa_poValue) const{
       CIEC_ANY::specialCast(*m_poValue, *pa_poValue);
     }
   }
+  std::cout << "CDataConnection::readData finished"  << std::endl;
 }
 
 bool CDataConnection::canBeConnected(const CIEC_ANY *pa_poSrcDataPoint,
@@ -129,7 +140,11 @@ EMGMResponse CDataConnection::establishDataConnection(CFunctionBlock *paDstFB, T
     CIEC_ANY *paDstDataPoint){
   EMGMResponse retVal = e_INVALID_OPERATION;
 
+  std::cout << "CDataConnection::establishDataConnection init " << std::endl;
+
+
   if(0 == m_poValue){
+    std::cout << "CDataConnection::establishDataConnection come into 0 == m_poValue " << std::endl;
     handleAnySrcPortConnection(*paDstDataPoint);
     retVal = e_RDY;
   }
@@ -146,5 +161,8 @@ EMGMResponse CDataConnection::establishDataConnection(CFunctionBlock *paDstFB, T
       mDestinationIds.popFront(); //empty the list so that the have created connection is not here anymore
     }
   }
+
+  std::cout << "CDataConnection::establishDataConnection finished "  << retVal << std::endl;
+
   return retVal;
 }

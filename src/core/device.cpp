@@ -17,6 +17,8 @@
 #include "ecet.h"
 #include <string.h>
 
+#include <iostream>
+
 EMGMResponse CDevice::executeMGMCommand(forte::core::SManagementCMD &paCommand){
   EMGMResponse retval = e_INVALID_DST;
 
@@ -34,6 +36,7 @@ EMGMResponse CDevice::executeMGMCommand(forte::core::SManagementCMD &paCommand){
 }
 
 EMGMResponse CDevice::changeFBExecutionState(EMGMCommandType paCommand){
+  std::cout << "CDevice::changeFBExecutionState " << paCommand << std::endl;
   if(cg_nMGM_CMD_Kill == paCommand){
     mDeviceExecution.disableHandlers();
   }

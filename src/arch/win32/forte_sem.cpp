@@ -17,6 +17,8 @@
 #include <errno.h>
 #include <string.h>
 
+#include <stdio.h>
+
 namespace forte {
   namespace arch {
 
@@ -36,6 +38,7 @@ namespace forte {
     }
 
     void CWin32Semaphore::waitIndefinitely(){
+      printf("waitIndefinitely... \n");
       WaitForSingleObject(mSemaphore, INFINITE);
     }
 

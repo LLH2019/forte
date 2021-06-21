@@ -19,6 +19,8 @@
 #include "utils/criticalregion.h"
 #include "../arch/devlog.h"
 
+#include <iostream>
+
 CEventChainExecutionThread::CEventChainExecutionThread() :
     CThread(), mSuspendSemaphore(0), mProcessingEvents(false)
 {
@@ -29,12 +31,14 @@ CEventChainExecutionThread::~CEventChainExecutionThread(){
 }
 
 void CEventChainExecutionThread::run(void){
+  std::cout << "CEventChainExecutionThread::run init..." << std::endl; 
   while(isAlive()){ //thread is allowed to execute
     mainRun();
   }
 }
 
 void CEventChainExecutionThread::mainRun(){
+  std::cout << "CEventChainExecutionThread::mainRun init..." << std::endl; 
   if(externalEventOccured()){
     transferExternalEvents();
   }
@@ -57,6 +61,7 @@ void CEventChainExecutionThread::mainRun(){
       mEventListStart--;
     }
   }
+  std::cout << "CEventChainExecutionThread::mainRun finished..." << std::endl;
 }
 
 void CEventChainExecutionThread::clear(void){
@@ -143,6 +148,8 @@ void CEventChainExecutionThread::addEventEntry(SEventEntry *paEventToAdd){
 }
 
 void CEventChainExecutionThread::changeExecutionState(EMGMCommandType paCommand){
+  std::cout << "CEventChainExecutionThread::changeExecutionState init " << paCommand << std::endl;
+  
   switch (paCommand){
     case cg_nMGM_CMD_Start:
       if(!isAlive()){
@@ -160,5 +167,7 @@ void CEventChainExecutionThread::changeExecutionState(EMGMCommandType paCommand)
     default:
       break;
   }
+
+  std::cout << "CEventChainExecutionThread::changeExecutionState finished" << std::endl;
 }
 

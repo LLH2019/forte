@@ -18,6 +18,10 @@
 
 #include "../../core/ecet.h"
 
+#include <stdio.h>
+#include <iostream>
+
+
 DEFINE_FIRMWARE_FB(RMT_RES, g_nStringIdRMT_RES);
 
 const CStringDictionary::TStringId RMT_RES::scm_aunVarInputNameIds[] = {g_nStringIdMGR_ID};
@@ -46,6 +50,11 @@ const SFBInterfaceSpec RMT_RES::scm_stFBInterfaceSpec = {
 
 RMT_RES::RMT_RES(CStringDictionary::TStringId pa_nInstanceNameId, CResource* pa_poDevice):
        CResource(pa_poDevice, &scm_stFBInterfaceSpec, pa_nInstanceNameId, m_anFBConnData, m_anFBVarsData){
+  
+  std::cout << "RMT_RES init..." << std::endl;
+
+  
+
   addFB(CTypeLib::createFB(g_nStringIdSTART, g_nStringIdE_RESTART, this));
   addFB(CTypeLib::createFB(g_nStringIdMGR_FF, g_nStringIdE_SR, this));
   addFB(CTypeLib::createFB(g_nStringIdMGR, g_nStringIdDEV_MGR, this));
@@ -99,11 +108,14 @@ RMT_RES::RMT_RES(CStringDictionary::TStringId pa_nInstanceNameId, CResource* pa_
   
   //Perform reset command normally done by the typelib during the creation process
   changeFBExecutionState(cg_nMGM_CMD_Reset);
+
+  std::cout << "RMT_RES finished..." << std::endl;
 }
 
 RMT_RES::~RMT_RES(){
 }
 
 void RMT_RES::joinResourceThread() const {
+  printf("RMT_RES cpp joinResourceThread... \n");
   getResourceEventExecution()->joinEventChainExecutionThread();
 }

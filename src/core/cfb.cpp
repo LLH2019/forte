@@ -19,6 +19,8 @@
 #include "utils/criticalregion.h"
 #include "if2indco.h"
 
+#include <stdio.h>
+
 CCompositeFB::CCompositeFB(CResource *pa_poSrcRes, const SFBInterfaceSpec *pa_pstInterfaceSpec,
     const CStringDictionary::TStringId pa_nInstanceNameId, const SCFB_FBNData * const pa_cpoFBNData,
     TForteByte *pa_acFBConnData, TForteByte *pa_acFBVarsData) :
@@ -192,6 +194,7 @@ void CCompositeFB::sendInternal2InterfaceOutputEvent(int pa_nEOID){
         CCriticalRegion criticalRegion(getResource().m_oResDataConSync);
         for(int i = 0; poEOWithStart[i] != 255; ++i){
           if(0 != m_apoIn2IfDConns[poEOWithStart[i]]){
+            printf("22222...\n");
             m_apoIn2IfDConns[poEOWithStart[i]]->readData(getDO(poEOWithStart[i]));
           }
         }
